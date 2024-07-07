@@ -55,23 +55,10 @@ class PlayerCharacteristic(models.Model):
 
 
 class BunkerInfo(models.Model):
-    SEASON_CHOICE = (
-        ("summer", "Літо"),
-        ("spring", "Весна"),
-        ("autumn", "Осінь"),
-        ("winter", "Зима")
-    )
-    ROOM_CHOICE = (
-        ("small", "Маленький"),
-        ("medium", "Середній"),
-        ("large", "Великий"),
-    )
-    catastrophe = models.ForeignKey(BunkerCharacteristic, related_name="catastrophe_games",
-                                    on_delete=models.SET_NULL, null=True)
-    season = models.CharField(max_length=200, choices=SEASON_CHOICE)
-    location = models.ForeignKey(BunkerCharacteristic, related_name="location_games",
-                                 on_delete=models.SET_NULL, null=True)
-    room_size = models.CharField(max_length=100, choices=ROOM_CHOICE)
+    catastrophe = models.CharField(max_length=100)
+    season = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    room_size = models.CharField(max_length=100)
     places = models.PositiveIntegerField()
     time = models.CharField(max_length=100)
     food = models.CharField(max_length=100)
@@ -108,20 +95,20 @@ class PlayerInfo(models.Model):
         ("alive", "Живий"),
         ("winner", "Переможець")
     )
-    SEX_CHOICE = (
-        ("male", "Хлопчина"),
-        ("female", "Жіночка")
-    )
+    status = models.CharField(max_length=100, choices=STATUS_CHOICE, default="alive")
+    sex = models.CharField(max_length=10)
+    age = models.PositiveIntegerField()
+    sick = models.CharField(max_length=100)
+    hobby = models.CharField(max_length=100)
+    phobia = models.CharField(max_length=100)
+    baggage = models.CharField(max_length=100)
+    quality = models.CharField(max_length=100)
+    knowledge = models.CharField(max_length=100)
+    job = models.CharField(max_length=100)
+
+
+class Profile(models.Model):
     nickname = models.CharField(max_length=12, default=generate_random_nickname)
     player_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    game = models.ForeignKey(Game, related_name="players", on_delete=models.CASCADE)
-    status = models.CharField(max_length=100, choices=STATUS_CHOICE, default="alive")
-    sex = models.CharField(max_length=10, choices=SEX_CHOICE)
-    age = models.PositiveIntegerField()
-    sick = models.ForeignKey(PlayerCharacteristic, related_name="sick_games", on_delete=models.SET_NULL, null=True)
-    hobby = models.ForeignKey(PlayerCharacteristic, related_name="hobby_games", on_delete=models.SET_NULL, null=True)
-    phobia = models.ForeignKey(PlayerCharacteristic, related_name="phobia_games", on_delete=models.SET_NULL, null=True)
-    baggage = models.ForeignKey(PlayerCharacteristic, related_name="baggage_games", on_delete=models.SET_NULL, null=True)
-    quality = models.ForeignKey(PlayerCharacteristic, related_name="quality_games", on_delete=models.SET_NULL, null=True)
-    knowledge = models.ForeignKey(PlayerCharacteristic, related_name="knowledge_games", on_delete=models.SET_NULL, null=True)
-    job = models.ForeignKey(PlayerCharacteristic, related_name="job_games", on_delete=models.SET_NULL, null=True)
+    game = models.ForeignKey(Game, related_name="profiles", on_delete=models.CASCADE)
+    player_info = models.OneToOneField(PlayerInfo, related_name="profile", on_delete=models.CASCADE, null=True)

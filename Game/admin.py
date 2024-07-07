@@ -32,7 +32,6 @@ class GameAdmin(admin.ModelAdmin):
 
 @admin.register(PlayerInfo)
 class PlayerInfoAdmin(admin.ModelAdmin):
-    list_display = (
-        'player_id', 'game', 'sex', 'age', 'sick', 'hobby', 'phobia', 'baggage', 'quality', 'knowledge', 'job')
-    search_fields = ('player_id', 'sex', 'age')
+    list_display = ('sex', 'age')
+    search_fields = ('sex', 'age', 'sick', 'hobby', 'phobia', 'baggage', 'quality', 'knowledge', 'job')
     list_filter = ('sex', 'status', 'age')

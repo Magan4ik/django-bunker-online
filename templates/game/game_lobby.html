@@ -5,24 +5,25 @@
         <div class="row justify-content-center">
             <div class="col-4 text-center">
                 <h1>Ігрове лобі</h1>
-                <small>Статус: {{ game.status }}</small>
+                <small>Статус: {{ game.status }}</small><br>
+                <small>Ви: {{ profile.nickname }}</small>
 
                 <p>Гравців {{ game.players.all|length }}/{{ game.max_players }}
-                    {% if client.player_id == game.owner_id %}
+                    {% if profile.player_id == game.owner_id %}
                         <a href="{% url 'Game:lobby_minus' game.game_id %}" class="btn btn-outline-warning">-</a>
                         <a href="{% url 'Game:lobby_plus' game.game_id %}" class="btn btn-outline-warning">+</a>
                     {% endif %}
                 </p>
                 <ol>
-                    {% for player in game.players.all %}
+                    {% for player in game.profiles.all %}
                     <li>{{ player.nickname }}
-                        {% if game.owner_id == client.player_id and player.player_id != client.player_id %}
+                        {% if game.owner_id == profile.player_id and player.player_id != profile.player_id %}
                         <a href="{% url 'Game:kick_lobby' game.game_id player.player_id %}" >[X]</a>
                         {% endif %}
                     </li>
                     {% endfor %}
                 </ol>
-                {% if client.player_id == game.owner_id %}
+                {% if profile.player_id == game.owner_id %}
                 <form method="POST" class="mb-3">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success">Почати гру!</button>
@@ -64,13 +65,13 @@
     }
 
     // Запускаем функцию checkServerStatus каждую секунду
-    {% if game.owner_id != client.player_id %}
+    {% if game.owner_id != profile.player_id %}
     setInterval(checkServerStatus, 1000);
     {% endif %}
 
     function checkServerKick() {
         // Отправляем запрос к серверу
-        fetch('/lobby/{{ client.player_id }}/kickcheck', {
+        fetch('/lobby/{{ profile.player_id }}/kickcheck', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -86,7 +87,7 @@
     }
 
     // Запускаем функцию checkServerStatus каждую секунду
-    {% if game.owner_id != client.player_id %}
+    {% if game.owner_id != profile.player_id %}
     setInterval(checkServerKick, 1000);
     {% endif %}
 
