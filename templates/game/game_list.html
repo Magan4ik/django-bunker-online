@@ -1,0 +1,41 @@
+{% extends 'base/_base.html' %}
+{% load game_filters %}
+{% block title %} Game list {% endblock %}
+
+{% block content %}
+        <div class="row justify-content-center">
+            <div class="col-3">
+            <h1>Ігрові лобі:</h1>
+                <ul>
+                    {% for game in games %}
+                        <li>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nicknameModal">{{ game|owner_nickname }}</button>
+                        </li>
+                        <div class="modal fade" id="nicknameModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Доєднатись до гри</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <form method="GET" action="{% url 'Game:lobby' game.game_id %}">
+                                    {% csrf_token %}
+                                  <div class="input-group mb-3">
+                                    <label for="nickname" class="input-group-text">Твій нік:</label>
+                                    <input type="text" class="form-control" name="nickname" id="nickname" required>
+                                  </div>
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary">Доєднатись</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    {% empty %}
+                        Поки нічого нема :(
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+{% endblock %}

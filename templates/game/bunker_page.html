@@ -1,0 +1,39 @@
+{% extends 'base/_base.html' %}
+{% block title %} Game list {% endblock %}
+
+{% block content %}
+        <div class="container">
+                <h1 class="text-center text-info">Вітаємо перед бункером</h1>
+                <div class="text-center">
+                    <small class="text-muted">Переконайте інших що ви варті увійти до нього</small>
+                </div>
+                <h3 class="text-center text-warning">Основна інформація:</h3>
+                <p class="mb-1">Катастрофа: {{ info.catastrophe.value }}</p>
+                <p class="mb-1">Сезон: {{ info.get_season_display }}</p>
+                <p class="mb-1">Локація: {{ info.location.value }}</p>
+                <p class="mb-1">Розмір бункеру: {{ info.get_room_size_display }}</p>
+                <p class="mb-1">Кількість місць: {{ info.places }}</p>
+                <p class="mb-1">Час перебування: {{ info.time}}</p>
+                <p class="mb-1">Провізії на: {{ info.food }}</p>
+                <h2 class="text-center text-info">Ваші характеристики:</h2>
+
+                <input type="checkbox" class="form-check-input" id="sex" checked disabled>
+                <label class="mb-1" for="sex"> Стать: {{ player.get_sex_display }}</label><br>
+                <input type="checkbox" class="form-check-input" id="age">
+                <label for="age" class="mb-1"> Вік: {{ player.age }}</label><br>
+                <input type="checkbox" class="form-check-input" id="sick">
+                <label for="sick" class="mb-1"> Хвороба: {{ player.sick.value }}</label><br>
+                <input type="checkbox" class="form-check-input" id="hobby">
+                <label for="hobby" class="mb-1">Хобі: {{ player.hobby.value }}</label><br>
+                <input type="checkbox" class="form-check-input" id="phobia">
+                <label for="phobia" class="mb-1">Фобія: {{ player.phobia.value }}</label><br>
+                <input type="checkbox" class="form-check-input" id="baggage">
+                <label for="baggage" class="mb-1">Багаж: {{ player.baggage.value }}</label><br>
+                <input type="checkbox" class="form-check-input" id="quality">
+                <label for="quality" class="mb-1">Риса: {{ player.quality.value }}</label><br>
+                <input type="checkbox" class="form-check-input" id="knowledge">
+                <label for="knowledge" class="mb-1">Знання: {{ player.knowledge.value }}</label><br>
+                <input type="checkbox" class="form-check-input" id="job">
+                <label for="job" class="mb-1">Робота: {{ player.job.value }}</label>
+        </div>
+{% endblock %}
