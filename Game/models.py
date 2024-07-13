@@ -24,34 +24,16 @@ class BunkerCharacteristic(models.Model):
 
 
 class PlayerCharacteristic(models.Model):
-    char_k = {"sick": 0.25,
-              "hobby": 0.15,
-              "job": 0.1,
-              "phobia": 0.2,
-              "baggage": 0.2,
-              "knowledge": 0.05}
-
-    TYPE_CHOICE = (
-        ("default", "Default"),
-        ("random", "Random")
+    STATUS_CHOICES = (
+        ('hidden', 'Hidden'),
+        ('opened', 'Opened')
     )
-    key = models.CharField(max_length=100)
-    value = models.CharField(max_length=200)
-    type = models.CharField(max_length=100, choices=TYPE_CHOICE, default="random")
 
-    @classmethod
-    def get_random(cls, key: str) -> Optional[models.Model]:
-        k = cls.char_k.get(key, 0)
-        qs = PlayerCharacteristic.objects.filter(key=key)
-        if qs.exists():
-            if random.random() > k:
-                char = qs.filter(type="random").order_by("?").first()
-            else:
-                char = qs.filter(type="default").first()
-            return char
+    value = models.CharField(max_length=100)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="hidden")
 
     def __str__(self):
-        return f"{self.key}: {self.value}"
+        return f"{self.value} ({self.status})"
 
 
 class BunkerInfo(models.Model):
@@ -59,6 +41,7 @@ class BunkerInfo(models.Model):
     season = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     room_size = models.CharField(max_length=100)
+    rooms = models.CharField(max_length=100)
     places = models.PositiveIntegerField()
     time = models.CharField(max_length=100)
     food = models.CharField(max_length=100)
@@ -80,6 +63,13 @@ class Game(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     started_at = models.DateTimeField(null=True)
     finished_at = models.DateTimeField(null=True)
+    turn = models.PositiveIntegerField(default=1)
+
+    def next_player(self):
+        self.turn += 1
+        if self.turn > self.max_players:
+            self.turn = 1
+        self.save()
 
     def save(self, *args, **kwargs):
         if self.status == "started" and self.started_at is None:
@@ -97,18 +87,19 @@ class PlayerInfo(models.Model):
     )
     status = models.CharField(max_length=100, choices=STATUS_CHOICE, default="alive")
     sex = models.CharField(max_length=10)
-    age = models.PositiveIntegerField()
-    sick = models.CharField(max_length=100)
-    hobby = models.CharField(max_length=100)
-    phobia = models.CharField(max_length=100)
-    baggage = models.CharField(max_length=100)
-    quality = models.CharField(max_length=100)
-    knowledge = models.CharField(max_length=100)
-    job = models.CharField(max_length=100)
+    age = models.OneToOneField(PlayerCharacteristic, related_name="age_info", on_delete=models.CASCADE)
+    sick = models.OneToOneField(PlayerCharacteristic, related_name="sick_info", on_delete=models.CASCADE)
+    hobby = models.OneToOneField(PlayerCharacteristic, related_name="hobby_info", on_delete=models.CASCADE)
+    phobia = models.OneToOneField(PlayerCharacteristic, related_name="phobia_info", on_delete=models.CASCADE)
+    baggage = models.OneToOneField(PlayerCharacteristic, related_name="baggage_info", on_delete=models.CASCADE)
+    quality = models.OneToOneField(PlayerCharacteristic, related_name="quality_info", on_delete=models.CASCADE)
+    knowledge = models.OneToOneField(PlayerCharacteristic, related_name="knowledge_info", on_delete=models.CASCADE)
+    job = models.OneToOneField(PlayerCharacteristic, related_name="job_info", on_delete=models.CASCADE)
 
 
 class Profile(models.Model):
     nickname = models.CharField(max_length=12, default=generate_random_nickname)
     player_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     game = models.ForeignKey(Game, related_name="profiles", on_delete=models.CASCADE)
+    number = models.PositiveIntegerField()
     player_info = models.OneToOneField(PlayerInfo, related_name="profile", on_delete=models.CASCADE, null=True)

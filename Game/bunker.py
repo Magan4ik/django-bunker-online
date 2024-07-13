@@ -21,6 +21,7 @@ class BunkerDTO:
     season: str
     location: str
     room_size: str
+    rooms: str
     places: int
     time: str
     food: str
@@ -41,13 +42,14 @@ def get_random_line(filename: str, index: int = None) -> str:
 
 
 class Bunker:
-    sick_k = 0.6
+    sick_k = 0.4
     hobby_k = 0.15
     job_k = 0.1
-    phobia_k = 0.2
+    phobia_k = 0.4
     baggage_k = 0.2
     knowledge_k = 0.05
-    food_k = 0.6
+    food_k = 0.02
+    rooms_k = 0.3
 
     files = {"sick": "data\\Болезни.txt",
              "hobby": {"<18": "data\\Хобби до 18.txt",
@@ -100,10 +102,11 @@ class Bunker:
     @classmethod
     def create_situation(cls, amount: int):
         catastrophe = get_random_line(cls.files["catastrophe"])
-        season = random.choice(["Весна", "Осінь", "Зима", "Літо"])
+        season = get_random_line(cls.files["seasons"])
         location = get_random_line(cls.files["locations"])
         room_sizes = ["Маленький", "Середній", "Великий"]
         room_size = room_sizes[min((amount // 5) - 1, 2)]
+        rooms = "Немає" if random.random() <= cls.rooms_k else get_random_line(cls.files["rooms"])
         places = random.randint((amount // 2), (amount // 2) + 1)
         time, days = cls._generate_random_bunker_period()
         food = cls._generate_random_food_period(days)
@@ -112,6 +115,7 @@ class Bunker:
             season=season,
             location=location,
             room_size=room_size,
+            rooms=rooms,
             places=places,
             time=time,
             food=food
@@ -119,13 +123,13 @@ class Bunker:
 
     @classmethod
     def _generate_random_bunker_period(cls):
-        years = random.randint(0, 2)
+        years = random.randint(0, 4)
         months = random.randint(0, 11)
         days = random.randint(0, 30)
 
         total_days = years * 365 + months * 30 + days
-        if total_days < 90:
-            total_days = 90
+        if total_days < 500:
+            total_days = 500
 
         years = total_days // 365
         remaining_days = total_days % 365

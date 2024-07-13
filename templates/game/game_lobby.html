@@ -8,7 +8,7 @@
                 <small>Статус: {{ game.status }}</small><br>
                 <small>Ви: {{ profile.nickname }}</small>
 
-                <p>Гравців {{ game.players.all|length }}/{{ game.max_players }}
+                <p>Гравців {{ game.profiles.all|length }}/{{ game.max_players }}
                     {% if profile.player_id == game.owner_id %}
                         <a href="{% url 'Game:lobby_minus' game.game_id %}" class="btn btn-outline-warning">-</a>
                         <a href="{% url 'Game:lobby_plus' game.game_id %}" class="btn btn-outline-warning">+</a>
@@ -93,7 +93,7 @@
 
     function checkServerConnect() {
         // Отправляем запрос к серверу
-        fetch('/lobby/{{ game.game_id }}/checkconnect/{{ game.players.all|length }}/', {
+        fetch('/lobby/{{ game.game_id }}/checkconnect/{{ game.profiles.all|length }}/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -102,7 +102,7 @@
         .then(response => response.json())  // Преобразуем ответ в формат JSON
         .then(data => {
             if (data.status === true) {  // Проверяем, если статус ответа равен true
-                location.reload();  // Перенаправляем пользователя
+                location.reload();
             }
         })
         .catch(error => console.error('Error:', error));

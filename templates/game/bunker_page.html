@@ -3,37 +3,134 @@
 
 {% block content %}
         <div class="container">
-                <h1 class="text-center text-info">Вітаємо перед бункером</h1>
-                <div class="text-center">
-                    <small class="text-muted">Переконайте інших що ви варті увійти до нього</small>
+            <h1 class="text-center text-info">Вітаємо перед бункером</h1>
+            <div class="text-center mb-3">
+                <small class="text-muted">Переконайте інших що ви варті увійти до нього. Ваш номер: {{ player.profile.number }}. <br>
+                    Грає гравець № {{ game.turn }}</small>
+            </div>
+            <div class="accordion" id="accordionExample">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h3 class="text-center text-warning">Основна інформація:</h3>
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                    <p class="mb-1">Катастрофа: {{ game.info.catastrophe }}</p>
+                    <p class="mb-1">Сезон: {{ game.info.season }}</p>
+                    <p class="mb-1">Локація: {{ game.info.location }}</p>
+                    <p class="mb-1">Розмір бункеру: {{ game.info.room_size }}</p>
+                    <p class="mb-1">Кількість місць: {{ game.info.places }}</p>
+                    <p class="mb-1">Час перебування: {{ game.info.time}}</p>
+                    <p class="mb-1">Провізії на: {{ game.info.food }}</p>
+                  </div>
                 </div>
-                <h3 class="text-center text-warning">Основна інформація:</h3>
-                <p class="mb-1">Катастрофа: {{ info.catastrophe }}</p>
-                <p class="mb-1">Сезон: {{ info.season }}</p>
-                <p class="mb-1">Локація: {{ info.location }}</p>
-                <p class="mb-1">Розмір бункеру: {{ info.room_size }}</p>
-                <p class="mb-1">Кількість місць: {{ info.places }}</p>
-                <p class="mb-1">Час перебування: {{ info.time}}</p>
-                <p class="mb-1">Провізії на: {{ info.food }}</p>
-                <h2 class="text-center text-info">Ваші характеристики:</h2>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <h2 class="text-center text-info">Ваші характеристики:</h2>
+                  </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                    <form method="GET" action="{% url 'Game:make_turn' game.game_id %}">
+                        <input type="checkbox" class="form-check-input" id="sex" name="sex" checked disabled>
+                        <label class="mb-1" for="sex"> Стать: {{ player.sex }}</label><br>
+                        <input type="checkbox" class="form-check-input" id="age" name="age" {% if player.age.status == 'opened' %} checked disabled{% endif %}>
+                        <label for="age" class="mb-1"> Вік: {{ player.age.value }}</label><br>
+                        <input type="checkbox" class="form-check-input" id="sick" name="sick" {% if player.sick.status == 'opened' %} checked disabled {% endif %}>
+                        <label for="sick" class="mb-1"> Хвороба: {{ player.sick.value }}</label><br>
+                        <input type="checkbox" class="form-check-input" id="hobby" name="hobby" {% if player.hobby.status == 'opened' %} checked disabled {% endif %}>
+                        <label for="hobby" class="mb-1">Хобі: {{ player.hobby.value }}</label><br>
+                        <input type="checkbox" class="form-check-input" id="phobia" name="phobia" {% if player.phobia.status == 'opened' %} checked disabled {% endif %}>
+                        <label for="phobia" class="mb-1">Фобія: {{ player.phobia.value }}</label><br>
+                        <input type="checkbox" class="form-check-input" id="baggage" name="baggage" {% if player.baggage.status == 'opened' %} checked disabled {% endif %}>
+                        <label for="baggage" class="mb-1">Багаж: {{ player.baggage.value }}</label><br>
+                        <input type="checkbox" class="form-check-input" id="quality" name="quality" {% if player.quality.status == 'opened' %} checked disabled {% endif %}>
+                        <label for="quality" class="mb-1">Риса: {{ player.quality.value }}</label><br>
+                        <input type="checkbox" class="form-check-input" id="knowledge" name="knowledge" {% if player.knowledge.status == 'opened' %} checked disabled {% endif %}>
+                        <label for="knowledge" class="mb-1">Знання: {{ player.knowledge.value }}</label><br>
+                        <input type="checkbox" class="form-check-input" id="job" name="job" {% if player.job.status == 'opened' %} checked disabled {% endif %}>
+                        <label for="job" class="mb-1">Робота: {{ player.job.value }}</label><br>
+                        {% if game.turn == player.profile.number %}
+                        <button type="submit" class="btn btn-success">Відкрити</button>
+                        {% endif %}
+                    </form>
+                  </div>
+                </div>
+              </div>
+              {% for profile in game.profiles.all %}
+              {% if profile.player_id != player.profile.player_id %}
 
-                <input type="checkbox" class="form-check-input" id="sex" checked disabled>
-                <label class="mb-1" for="sex"> Стать: {{ player.sex }}</label><br>
-                <input type="checkbox" class="form-check-input" id="age">
-                <label for="age" class="mb-1"> Вік: {{ player.age }}</label><br>
-                <input type="checkbox" class="form-check-input" id="sick">
-                <label for="sick" class="mb-1"> Хвороба: {{ player.sick }}</label><br>
-                <input type="checkbox" class="form-check-input" id="hobby">
-                <label for="hobby" class="mb-1">Хобі: {{ player.hobby }}</label><br>
-                <input type="checkbox" class="form-check-input" id="phobia">
-                <label for="phobia" class="mb-1">Фобія: {{ player.phobia }}</label><br>
-                <input type="checkbox" class="form-check-input" id="baggage">
-                <label for="baggage" class="mb-1">Багаж: {{ player.baggage }}</label><br>
-                <input type="checkbox" class="form-check-input" id="quality">
-                <label for="quality" class="mb-1">Риса: {{ player.quality }}</label><br>
-                <input type="checkbox" class="form-check-input" id="knowledge">
-                <label for="knowledge" class="mb-1">Знання: {{ player.knowledge }}</label><br>
-                <input type="checkbox" class="form-check-input" id="job">
-                <label for="job" class="mb-1">Робота: {{ player.job }}</label>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ch{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseThree">
+                    {{ profile.nickname }} ({{ profile.player_info.sex }})
+
+                  </button>
+                </h2>
+                <div id="ch{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                      {% if profile.player_info.age.status == 'opened' %}
+                          <p class="mb-1"> Вік: {{ profile.player_info.age.value }}</p>
+                      {% endif %}
+                      {% if profile.player_info.sick.status == 'opened' %}
+                          <p class="mb-1"> Хвороба: {{ profile.player_info.sick.value }}</p>
+                      {% endif %}
+                      {% if profile.player_info.hobby.status == 'opened' %}
+                          <p class="mb-1"> Хобі: {{ profile.player_info.hobby.value }}</p>
+                      {% endif %}
+                      {% if profile.player_info.phobia.status == 'opened' %}
+                          <p class="mb-1"> Фобія: {{ profile.player_info.phobia.value }}</p>
+                      {% endif %}
+                      {% if profile.player_info.baggage.status == 'opened' %}
+                          <p class="mb-1"> Багаж: {{ profile.player_info.baggage.value }}</p>
+                      {% endif %}
+                      {% if profile.player_info.quality.status == 'opened' %}
+                          <p class="mb-1"> Риса: {{ profile.player_info.quality.value }}</p>
+                      {% endif %}
+                      {% if profile.player_info.knowledge.status == 'opened' %}
+                          <p class="mb-1"> Знання: {{ profile.player_info.knowledge.value }}</p>
+                      {% endif %}
+                      {% if profile.player_info.job.status == 'opened' %}
+                          <p class="mb-1"> Робота: {{ profile.player_info.job.value }}</p>
+                      {% endif %}
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              {% endfor %}
+            {% if player.profile.player_id == game.owner_id %}
+                <a href="{% url 'Game:delete_lobby' game.game_id %}" class="btn btn-danger mt-5">Видалити гру</a>
+            {% else %}
+                <a href="{% url 'Game:leave_lobby' game.game_id %}" class="btn btn-danger mt-5">Покинути гру</a>
+            {% endif %}
+            </div>
         </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        function checkServerConnect() {
+            // Отправляем запрос к серверу
+            fetch('/bunker/{{ game.game_id }}/turncheck/{{ game.turn }}/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())  // Преобразуем ответ в формат JSON
+            .then(data => {
+                if (data.status === true) {  // Проверяем, если статус ответа равен true
+                    location.reload();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Запускаем функцию checkServerStatus каждую секунду
+        setInterval(checkServerConnect, 1000);
+    </script>
 {% endblock %}

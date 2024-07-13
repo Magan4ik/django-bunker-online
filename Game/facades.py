@@ -13,7 +13,17 @@ class BunkerFacade:
 
     @classmethod
     def create_player_from_dto(cls, player_dto: PlayerDTO) -> PlayerInfo:
-        return PlayerInfo.objects.create(**asdict(player_dto))
+        return PlayerInfo.objects.create(
+            sex=player_dto.sex,
+            age=PlayerCharacteristic.objects.create(value=player_dto.age),
+            sick=PlayerCharacteristic.objects.create(value=player_dto.sick),
+            hobby=PlayerCharacteristic.objects.create(value=player_dto.hobby),
+            phobia=PlayerCharacteristic.objects.create(value=player_dto.phobia),
+            baggage=PlayerCharacteristic.objects.create(value=player_dto.baggage),
+            quality=PlayerCharacteristic.objects.create(value=player_dto.quality),
+            knowledge=PlayerCharacteristic.objects.create(value=player_dto.knowledge),
+            job=PlayerCharacteristic.objects.create(value=player_dto.job),
+        )
 
     @classmethod
     def create_info_from_dto(cls, info_dto: BunkerDTO) -> BunkerInfo:

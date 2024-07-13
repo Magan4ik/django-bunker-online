@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Game.models import BunkerCharacteristic, PlayerCharacteristic, BunkerInfo, Game, PlayerInfo
+from Game.models import BunkerCharacteristic, PlayerCharacteristic, BunkerInfo, Game, PlayerInfo, Profile
 
 
 @admin.register(BunkerCharacteristic)
@@ -11,9 +11,9 @@ class BunkerCharacteristicAdmin(admin.ModelAdmin):
 
 @admin.register(PlayerCharacteristic)
 class PlayerCharacteristicAdmin(admin.ModelAdmin):
-    list_display = ('key', 'value', 'type')
-    search_fields = ('key', 'value')
-    list_filter = ('key', 'type')
+    list_display = ('value', 'status')
+    search_fields = ('value',)
+    list_filter = ('status',)
 
 
 @admin.register(BunkerInfo)
@@ -35,3 +35,9 @@ class PlayerInfoAdmin(admin.ModelAdmin):
     list_display = ('sex', 'age')
     search_fields = ('sex', 'age', 'sick', 'hobby', 'phobia', 'baggage', 'quality', 'knowledge', 'job')
     list_filter = ('sex', 'status', 'age')
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('nickname',)
+    search_fields = ('nickname',)
