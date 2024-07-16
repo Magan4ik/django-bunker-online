@@ -1,6 +1,7 @@
 import random
 import string
 import uuid
+import json
 from typing import Optional
 
 from django.db import models
@@ -29,22 +30,28 @@ class PlayerCharacteristic(models.Model):
         ('opened', 'Opened')
     )
 
-    value = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    bonus = models.JSONField(default=list)
+    difficulty = models.PositiveIntegerField(default=0)
+    provision = models.DecimalField(max_digits=3, decimal_places=2, default=0)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="hidden")
 
     def __str__(self):
-        return f"{self.value} ({self.status})"
+        return f"{self.name} ({self.status})"
 
 
 class BunkerInfo(models.Model):
     catastrophe = models.CharField(max_length=100)
     season = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
-    room_size = models.CharField(max_length=100)
+    season_type = models.CharField(max_length=500)
+    location = models.CharField(max_length=200)
     rooms = models.CharField(max_length=100)
     places = models.PositiveIntegerField()
-    time = models.CharField(max_length=100)
-    food = models.CharField(max_length=100)
+    time = models.PositiveIntegerField()
+    timeout = models.PositiveIntegerField()
+    food = models.PositiveIntegerField()
+    skill_data = models.JSONField()
+    win_req = models.IntegerField()
 
 
 class Game(models.Model):
@@ -87,7 +94,7 @@ class PlayerInfo(models.Model):
     )
     status = models.CharField(max_length=100, choices=STATUS_CHOICE, default="alive")
     sex = models.CharField(max_length=10)
-    age = models.OneToOneField(PlayerCharacteristic, related_name="age_info", on_delete=models.CASCADE)
+    age = models.PositiveIntegerField()
     sick = models.OneToOneField(PlayerCharacteristic, related_name="sick_info", on_delete=models.CASCADE)
     hobby = models.OneToOneField(PlayerCharacteristic, related_name="hobby_info", on_delete=models.CASCADE)
     phobia = models.OneToOneField(PlayerCharacteristic, related_name="phobia_info", on_delete=models.CASCADE)

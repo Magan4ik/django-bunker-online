@@ -1,36 +1,7 @@
-from dataclasses import dataclass
+
 import random
 
-
-@dataclass
-class PlayerDTO:
-    sex: str
-    age: int
-    sick: str
-    hobby: str
-    phobia: str
-    baggage: str
-    quality: str
-    knowledge: str
-    job: str
-
-
-@dataclass
-class BunkerDTO:
-    catastrophe: str
-    season: str
-    location: str
-    room_size: str
-    rooms: str
-    places: int
-    time: str
-    food: str
-
-
-@dataclass
-class GameDTO:
-    info: BunkerDTO
-    players: list[PlayerDTO]
+from Game.dtos import GameDTO, PlayerDTO, BunkerDTO
 
 
 def get_random_line(filename: str, index: int = None) -> str:

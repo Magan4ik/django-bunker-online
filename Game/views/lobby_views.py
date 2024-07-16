@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from Game.models import Game, PlayerInfo, Profile, PlayerCharacteristic
 
 from Game.facades import BunkerFacade
-from Game.bunker import Bunker
+from Game.bunker2 import Bunker
 
 
 # Create your views here.
@@ -37,12 +37,15 @@ def lobby_view(request: HttpRequest, game_id: str) -> HttpResponse:
                 game.owner_id):
             game.status = "started"
             amount = len(game.profiles.all())
-            game_info = Bunker.start(amount)
+            bunker = Bunker()
+            game_info = bunker.start(amount=amount)
             info = BunkerFacade.create_info_from_dto(game_info.info)
             profiles = game.profiles.all()
-            for profile, player in zip(profiles, game_info.players):
+            for num, profile_player in enumerate(zip(profiles, game_info.players), 1):
+                profile, player = profile_player
                 player_info = BunkerFacade.create_player_from_dto(player)
                 profile.player_info = player_info
+                profile.number = num
                 profile.save()
             game.info = info
             game.max_players = amount

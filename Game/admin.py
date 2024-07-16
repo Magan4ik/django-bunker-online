@@ -11,16 +11,16 @@ class BunkerCharacteristicAdmin(admin.ModelAdmin):
 
 @admin.register(PlayerCharacteristic)
 class PlayerCharacteristicAdmin(admin.ModelAdmin):
-    list_display = ('value', 'status')
-    search_fields = ('value',)
+    list_display = ('name', 'status')
+    search_fields = ('name',)
     list_filter = ('status',)
 
 
 @admin.register(BunkerInfo)
 class BunkerInfoAdmin(admin.ModelAdmin):
-    list_display = ('catastrophe', 'season', 'location', 'room_size', 'places', 'time', 'food')
-    search_fields = ('season', 'room_size')
-    list_filter = ('season', 'room_size')
+    list_display = ('catastrophe', 'season', 'location', 'places', 'time', 'food')
+    search_fields = ('season', 'catastrophe', 'location', 'rooms')
+    list_filter = ('season',)
 
 
 @admin.register(Game)
