@@ -5,6 +5,7 @@ import json
 from typing import Optional
 
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 
@@ -94,7 +95,7 @@ class PlayerInfo(models.Model):
     )
     status = models.CharField(max_length=100, choices=STATUS_CHOICE, default="alive")
     sex = models.CharField(max_length=10)
-    age = models.PositiveIntegerField()
+    age = models.OneToOneField(PlayerCharacteristic, related_name="age_info", on_delete=models.CASCADE)
     sick = models.OneToOneField(PlayerCharacteristic, related_name="sick_info", on_delete=models.CASCADE)
     hobby = models.OneToOneField(PlayerCharacteristic, related_name="hobby_info", on_delete=models.CASCADE)
     phobia = models.OneToOneField(PlayerCharacteristic, related_name="phobia_info", on_delete=models.CASCADE)
@@ -102,6 +103,25 @@ class PlayerInfo(models.Model):
     quality = models.OneToOneField(PlayerCharacteristic, related_name="quality_info", on_delete=models.CASCADE)
     knowledge = models.OneToOneField(PlayerCharacteristic, related_name="knowledge_info", on_delete=models.CASCADE)
     job = models.OneToOneField(PlayerCharacteristic, related_name="job_info", on_delete=models.CASCADE)
+    opened_bonuses = models.JSONField(default=list)
+
+    def update_bonus(self):
+        chars = PlayerCharacteristic.objects.filter(
+            Q(age_info=self) |
+            Q(sick_info=self) |
+            Q(hobby_info=self) |
+            Q(phobia_info=self) |
+            Q(baggage_info=self) |
+            Q(quality_info=self) |
+            Q(knowledge_info=self) |
+            Q(job_info=self) &
+            Q(status="opened")
+        )
+        bonuses = self.opened_bonuses
+        for c in chars:
+            bonuses += c.bonus
+        self.opened_bonuses = bonuses
+        self.save()
 
 
 class Profile(models.Model):

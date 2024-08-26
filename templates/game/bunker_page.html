@@ -42,7 +42,7 @@
                         <input type="checkbox" class="form-check-input" id="sex" name="sex" checked disabled>
                         <label class="mb-1" for="sex"> Стать: {{ player.sex }}</label><br>
                         <input type="checkbox" class="form-check-input" id="age" name="age" {% if player.age.status == 'opened' %} checked disabled{% endif %}>
-                        <label for="age" class="mb-1"> Вік: {{ player.age }}</label><br>
+                        <label for="age" class="mb-1"> Вік: {{ player.age.name }}</label><br>
                         <input type="checkbox" class="form-check-input" id="sick" name="sick" {% if player.sick.status == 'opened' %} checked disabled {% endif %}>
                         <label for="sick" class="mb-1"> Хвороба: {{ player.sick.name }} (Складність: {{ player.sick.difficulty }} Провізія: {{ player.hobby.provision }} місяця(-ів))</label><br>
                         <input type="checkbox" class="form-check-input" id="hobby" name="hobby" {% if player.hobby.status == 'opened' %} checked disabled {% endif %}>
@@ -77,7 +77,7 @@
                 <div id="ch{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                   <div class="accordion-body">
                       {% if profile.player_info.age.status == 'opened' %}
-                          <p class="mb-1"> Вік: {{ profile.player_info.age }}</p>
+                          <p class="mb-1"> Вік: {{ profile.player_info.age.name }}</p>
                       {% endif %}
                       {% if profile.player_info.sick.status == 'opened' %}
                           <p class="mb-1"> Хвороба: {{ profile.player_info.sick.name }} (Складність: {{ profile.player_info.sick.difficulty }} Провізія: {{ profile.player_info.hobby.provision }} місяця(-ів))</p>

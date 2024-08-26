@@ -15,7 +15,7 @@ class BunkerFacade:
     def create_player_from_dto(cls, player_dto: PlayerDTO) -> PlayerInfo:
         return PlayerInfo.objects.create(
             sex=player_dto.sex,
-            age=player_dto.age,
+            age=PlayerCharacteristic.objects.create(name=player_dto.age),
             sick=PlayerCharacteristic.objects.create(**asdict(player_dto.sick)),
             hobby=PlayerCharacteristic.objects.create(**asdict(player_dto.hobby)),
             phobia=PlayerCharacteristic.objects.create(**asdict(player_dto.phobia)),

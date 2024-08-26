@@ -47,6 +47,8 @@ def make_turn_view(request: HttpRequest, game_id: str) -> HttpResponse:
         profile.player_info.job.status = "opened"
         profile.player_info.job.save()
     profile.save()
+    profile.player_info.update_bonus()
+    print(profile.player_info.opened_bonuses)
     game.next_player()
     turn = game.turn
     while not Profile.objects.filter(number=turn, game=game).exists():
